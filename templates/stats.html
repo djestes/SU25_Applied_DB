@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Player Stats</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+    <h1 class="mb-4">Top 10 Leaders</h1>
+
+    <!-- Dropdown to select stat type -->
+    <form action="{{ url_for('stats') }}" method="get" class="mb-4">
+        <label for="stat" class="form-label">Select Stat Type:</label>
+        <select name="stat" id="stat" class="form-select w-25 d-inline-block">
+            <option value="rushing" {% if stat_type == 'rushing' %}selected{% endif %}>Rushing Leaders</option>
+            <option value="passing" {% if stat_type == 'passing' %}selected{% endif %}>Passing Leaders</option>
+            <option value="receiving" {% if stat_type == 'receiving' %}selected{% endif %}>Receiving Leaders</option>
+        </select>
+        <button type="submit" class="btn btn-primary">Show</button>
+    </form>
+
+    <!-- Link back to Players -->
+    <a href="{{ url_for('home') }}" class="btn btn-secondary mb-4">Back to Players</a>
+
+    <!-- Chart -->
+    <div>
+        {{ graph|safe }}
+    </div>
+</body>
+</html>
