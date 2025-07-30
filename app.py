@@ -8,7 +8,7 @@ from sqlalchemy import text
 app = Flask(__name__)
 
 # Connect to your PostgreSQL database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Hoo$ierdaddy123@localhost:5432/NFL'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://nfl_test_user:bjMavoAIkOq83pbuxVQO63NaRbxD0ppQ@dpg-d24p52qdbo4c739vtir0-a/nfl_test'
 db = SQLAlchemy(app)
 
 # Define a simple Player model
