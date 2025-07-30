@@ -109,4 +109,4 @@ def stats():
     return render_template('stats.html', graph=Markup(graph_html), stat_type=stat_type)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0',debug=True)
