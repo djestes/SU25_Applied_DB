@@ -69,37 +69,36 @@ def update_player(player_id):
 
 # Add stats    
 @app.route('/stats')
+@app.route('/stats')
 def stats():
-    # Determine which stat to show (default: rushing)
     stat_type = request.args.get('stat', 'rushing')
-
-    # Map stat type to table and column
+    
     stat_map = {
-        'rushing': ('career_stats_rushing', 'rushing_yards', 'Rushing Yards'),
-        'passing': ('career_stats_passing', 'passing_yards', 'Passing Yards'),
-        'receiving': ('career_stats_receiving', 'receiving_yards', 'Receiving Yards')
+        'rushing': ('career_stats_rushing', 'rushing_yards', 'games_played', 'Avg Rushing Yards/Game'),
+        'passing': ('career_stats_passing', 'passing_yards', 'games_played', 'Avg Passing Yards/Game'),
+        'receiving': ('career_stats_receiving', 'receiving_yards', 'games_played', 'Avg Receiving Yards/Game')
     }
 
-    table, column, label = stat_map.get(stat_type, stat_map['rushing'])
+    table, yard_col, games_col, label = stat_map[stat_type]
 
-    # Build SQL query dynamically
     query = text(f"""
-        SELECT name, {column}
+        SELECT name,
+               CAST({yard_col} AS FLOAT) / NULLIF({games_col}, 0) AS avg_yards
         FROM {table}
-        WHERE {column} ~ '^[0-9]+$'
-        ORDER BY CAST({column} AS INT) DESC
+        WHERE {yard_col} ~ '^[0-9]+$'
+          AND {games_col} > 0
+        ORDER BY avg_yards DESC
         LIMIT 10;
     """)
+
     results = db.session.execute(query).fetchall()
 
-    # Extract data
     names = [row[0] for row in results]
-    values = [int(row[1]) for row in results]
+    values = [round(row[1], 1) for row in results]  # rounding to 1 decimal place
 
-    # Plotly chart
     fig = go.Figure([go.Bar(x=names, y=values, marker=dict(color='royalblue'))])
     fig.update_layout(
-        title=f"Top 10 {label} Leaders",
+        title=f"Top 10 {label}",
         xaxis_title="Player",
         yaxis_title=label,
         template="plotly_white"
